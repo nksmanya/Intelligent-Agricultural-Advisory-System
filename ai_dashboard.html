@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>🌿 AI Agri Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #9be15d, #00e3ae);
+      margin: 0;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .card {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #2b6cb0;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: bold;
+      color: #2b6cb0;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌾 AI-Powered Agri Dashboard</h1>
+    <p style="text-align:center;">Welcome, <strong>{{ name }}</strong>! Soil Type: <span class="highlight">{{ soil_type }}</span></p>
+
+    <div class="section">
+      <h2>🌱 Recommended Crops</h2>
+      <ul>
+        {% for crop in recommended_crops %}
+          <li>{{ crop }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>☁️ Weather Forecast</h2>
+      <div class="card">
+        <p>Temperature: <span class="highlight">{{ temp }}°C</span></p>
+        <p>Humidity: <span class="highlight">{{ humidity }}%</span></p>
+        <p>Condition: <span class="highlight">{{ weather_desc }}</span></p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📡 IoT Irrigation Suggestion</h2>
+      <div class="card">
+        <p>Sensor Humidity: <span class="highlight">{{ iot_humidity }}%</span></p>
+        <p>{{ irrigation_tip }}</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📈 Market Rates</h2>
+      <ul>
+        {% for _, row in market_rates.iterrows() %}
+          <li>{{ row['commodity_name'] }}: ₹{{ row['avg_modal_price'] }}/kg</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>🧪 Fertilizer & Pest Tips</h2>
+      <ul>
+        <li>Use Nitrogen-based fertilizers during early stages.</li>
+        <li>Apply neem-based bio-pesticides to control pests.</li>
+        <li>Avoid over-irrigation to prevent root rot.</li>
+      </ul>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

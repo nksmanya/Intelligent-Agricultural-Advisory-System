@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>AI-Powered Agri Dashboard</title>
-    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +15,7 @@
             border-radius: 10px;
             padding: 30px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
         }
         h1 {
@@ -41,40 +40,67 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .value-box {
+            background-color: #f7fff9;
+            padding: 12px 16px;
+            border-left: 5px solid #2f855a;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌾 AI-Powered Agri Dashboard</h1>
+        <h1>🌾 Welcome, {{ name }}</h1>
 
-        <h2>Best Crops to Grow</h2>
+        <div class="value-box">
+            <strong>🧪 Soil Type:</strong> {{ soil_type }}
+        </div>
+
+        <h2>☁️ Weather Forecast</h2>
         <ul>
-            <li>Rice</li>
-            <li>Wheat</li>
-            <li>Maize</li>
-            <li>Sugarcane</li>
+            <li><strong>Temperature:</strong> {{ temp }} °C</li>
+            <li><strong>Humidity:</strong> {{ humidity }}%</li>
+            <li><strong>Condition:</strong> {{ weather_desc }}</li>
         </ul>
 
-        <h2>Upcoming Weather Forecast (Sample)</h2>
+        <h2>💧 IoT Humidity & Irrigation Tip</h2>
         <ul>
-            <li>Temperature: 30°C to 34°C</li>
-            <li>Humidity: 70% to 80%</li>
-            <li>Rainfall Chances: Moderate to High</li>
+            <li><strong>Soil Humidity:</strong> {{ iot_humidity }}%</li>
+            <li><strong>Suggestion:</strong> {{ irrigation_tip }}</li>
         </ul>
 
-        <h2>Fertilizer & Pest Control Tips</h2>
-        <ul>
-            <li>Apply Nitrogen fertilizer during early growth stages.</li>
-            <li>Use bio-pesticides to minimize pest attacks.</li>
-            <li>Ensure proper irrigation to avoid waterlogging.</li>
-        </ul>
+        <h2>🌱 Crop Status</h2>
+        <p>{{ crop_display }}</p>
 
-        <h2>Nearby Market Rates (Sample)</h2>
-        <ul>
-            <li>Rice: ₹25/kg</li>
-            <li>Wheat: ₹22/kg</li>
-            <li>Maize: ₹18/kg</li>
-        </ul>
+        <h2>📊 Market Prices</h2>
+        <table>
+            <tr>
+                <th>Crop</th>
+                <th>Month</th>
+                <th>Price (₹)</th>
+            </tr>
+            {% for index, row in market_rates.iterrows() %}
+                <tr>
+                    <td>{{ row['commodity_name'] }}</td>
+                    <td>{{ row['month'].strftime('%Y-%m') }}</td>
+                    <td>{{ row['avg_modal_price'] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
         <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
     </div>

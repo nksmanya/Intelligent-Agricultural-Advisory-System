@@ -402,6 +402,8 @@ def current_crop():
                            weather_desc=weather_desc,
                            iot_humidity=iot_humidity,
                            water_recommendation=water_recommendation)
+
+
 @app.route('/marketprice.html')
 def market_price():
     csv_path = "crop_price_dataset.csv"
@@ -510,12 +512,75 @@ def soil_report():
     return render_template('soilreport.html', soil_quality=soil_quality)
 
 
-# AI-Powered Agri Dashboard
-@app.route('/ai-dashboard')
+# AI Powered Agri Dashboard
+@app.route('/ai_dashboard')
 def ai_dashboard():
-    return render_template('ai_dashboard.html')
+    if 'user' not in session:
+        return redirect('/login')
+
+    try:
+        conn = sqlite3.connect('agri.db')
+        cursor = conn.cursor()
+
+        # Get user info
+        cursor.execute("SELECT id, soil_type, location FROM users WHERE name=?", (session['user'],))
+        user_info = cursor.fetchone()
+        if not user_info:
+            flash("User not found.")
+            return redirect('/dashboard')
+
+        user_id, soil_type, location = user_info
+
+        # Weather
+        lat, lon = map(float, location.split(','))
+        weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=63f6d64abf2532c74319740224e1fc24&units=metric"
+        weather = requests.get(weather_url).json()
+        temp = weather.get('main', {}).get('temp', '--')
+        humidity = weather.get('main', {}).get('humidity', '--')
+        weather_desc = weather.get('weather', [{}])[0].get('description', '--')
+
+        # IoT Humidity simulation
+        iot_humidity = round(random.uniform(25, 65), 1)
+        irrigation_tip = "💧 Water crops today" if iot_humidity < 30 else "✅ No watering needed"
+
+        # Check for current crops
+        cursor.execute("SELECT crop_name FROM current_crops WHERE user_id=? ORDER BY seeding_date DESC LIMIT 1", (user_id,))
+        crop_row = cursor.fetchone()
+
+        if crop_row:
+            crop_display = f"🌱 Current Crop: {crop_row[0]}"
+        else:
+            crop_display = "🌾 Recommended Crops: Rice, Wheat, Maize, Sugarcane"
+
+        # Market Prices
+        df = pd.read_csv("crop_price_dataset.csv")
+        df['month'] = pd.to_datetime(df['month'], errors='coerce')
+        df.dropna(subset=['month'], inplace=True)
+
+        top_prices = df[df['commodity_name'].isin(['Rice', 'Wheat', 'Maize'])] \
+            .sort_values(['commodity_name', 'month']) \
+            .groupby('commodity_name').tail(1)
+
+        conn.close()
+
+        return render_template('ai_dashboard.html',
+                               name=session['user'],
+                               soil_type=soil_type,
+                               temp=temp,
+                               humidity=humidity,
+                               weather_desc=weather_desc,
+                               iot_humidity=iot_humidity,
+                               irrigation_tip=irrigation_tip,
+                               crop_display=crop_display,
+                               market_rates=top_prices)
+
+    except Exception as e:
+        print("Dashboard Error:", e)
+        flash("Something went wrong in the AI dashboard.")
+        return redirect('/dashboard')
 
 
+    # Io
 
 # Logout
 @app.route('/logout')
