@@ -13,7 +13,7 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'agri-secret'  # For session & flash messages
 
-# Initialize SQLite DB
+# Initialize SQLite DB for users
 def init_db():
     conn = sqlite3.connect('agri.db')
     cursor = conn.cursor()
@@ -33,7 +33,26 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()  # Initialize DB
+# Initialize Crop Table
+def init_crop_table():
+    conn = sqlite3.connect('agri.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS current_crops (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            crop_name TEXT NOT NULL,
+            seeding_date TEXT NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+# First define the functions, then call them
+init_db()
+init_crop_table()
+
 
 # Load ML Models (only once)
 soil_model = pickle.load(open('ml_models/soil_health_model.pkl', 'rb'))
@@ -326,6 +345,131 @@ def agri_news():
         print("Error fetching news:", e)
 
     return render_template('news.html', articles=articles)
+@app.route('/current_crop', methods=['GET', 'POST'])
+def current_crop():
+    if 'user' not in session:
+        return redirect('/')
+
+    conn = sqlite3.connect('agri.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, soil_type, location FROM users WHERE name=?", (session['user'],))
+    user_data = cursor.fetchone()
+
+    if not user_data:
+        flash("User data missing!")
+        return redirect('/dashboard')
+
+    user_id, soil_type, location = user_data
+
+    # Save crop data
+    if request.method == 'POST':
+        crop_name = request.form.get('crop_name')
+        seeding_date = request.form.get('seeding_date')
+
+        if crop_name and seeding_date:
+            cursor.execute("INSERT INTO current_crops (user_id, crop_name, seeding_date) VALUES (?, ?, ?)",
+                           (user_id, crop_name, seeding_date))
+            conn.commit()
+            flash("Crop added successfully!")
+            return redirect(url_for('current_crop'))
+
+    # Fetch all crops for user
+    cursor.execute("SELECT crop_name, seeding_date FROM current_crops WHERE user_id=? ORDER BY seeding_date DESC", (user_id,))
+    crops = cursor.fetchall()
+
+    # Weather Info
+    lat, lon = map(float, location.split(','))
+    api_key = "63f6d64abf2532c74319740224e1fc24"
+    weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    weather = requests.get(weather_url).json()
+
+    current_temp = weather.get('main', {}).get('temp', '--')
+    humidity = weather.get('main', {}).get('humidity', '--')
+    weather_desc = weather.get('weather', [{}])[0].get('description', '--')
+
+    conn.close()
+
+    # Dummy IoT Simulation (replace later)
+    iot_humidity = round(random.uniform(20, 60), 1)
+    water_recommendation = "Water the crops today." if iot_humidity < 30 else "No watering needed."
+
+    return render_template('current_crop.html',
+                           name=session['user'],
+                           crops=crops,
+                           soil_type=soil_type,
+                           current_temp=current_temp,
+                           humidity=humidity,
+                           weather_desc=weather_desc,
+                           iot_humidity=iot_humidity,
+                           water_recommendation=water_recommendation)
+@app.route('/marketprice.html')
+def market_price():
+    csv_path = "crop_price_dataset.csv"
+
+    try:
+        df = pd.read_csv(csv_path)
+        print("✅ CSV Loaded:", df.shape)
+    except Exception as e:
+        print("❌ Error reading CSV:", e)
+        return "Error reading CSV file."
+
+    # Check required columns
+    if not {'month', 'commodity_name', 'avg_modal_price'}.issubset(df.columns):
+        print("❌ Missing required columns in CSV!")
+        return "CSV is missing required columns."
+
+    df['month'] = pd.to_datetime(df['month'], errors='coerce')
+    df = df.dropna(subset=['month'])
+
+    COMMODITIES = ["Tomato", "Potato", "Onion", "Jowar(Sorghum)", "Coconut", "Groundnut",
+                   "Turmeric", "Ginger (Dry)", "Barley", "Millets", "Sugarcane", "Coffee",
+                   "Cotton", "Sugar", "Rice", "Wheat", "Maize"]
+
+    results = []
+
+    for commodity in COMMODITIES:
+        commodity_data = df[df['commodity_name'] == commodity].sort_values('month')
+
+        if commodity_data.empty:
+            print(f"⚠️ No data for {commodity}")
+            continue
+
+        last_two = commodity_data.tail(2).dropna(subset=['avg_modal_price'])
+
+        try:
+            last_prices = last_two['avg_modal_price'].astype(float).values
+        except Exception as e:
+            print(f"⚠️ Error converting prices for {commodity}: {e}")
+            continue
+
+        if len(last_prices) < 2:
+            print(f"⚠️ Not enough data for {commodity}")
+            continue
+
+        last_two_months = last_two[['month', 'avg_modal_price']].copy()
+        last_two_months['month'] = last_two_months['month'].dt.strftime('%Y-%m')
+
+        slope = last_prices[-1] - last_prices[-2]
+        next_six = []
+        for i in range(1, 7):
+            future_month = (last_two['month'].max() + pd.DateOffset(months=i)).strftime('%Y-%m')
+            predicted = max(0, last_prices[-1] + i * slope)
+            next_six.append({
+                'month': future_month,
+                'predicted_price': round(predicted, 2)
+            })
+
+        print(f"✅ {commodity} → Predicted")
+
+        results.append({
+            'commodity': commodity,
+            'last_two': last_two_months.to_dict(orient='records'),
+            'next_six': next_six
+        })
+
+    print("🟢 Total commodities processed:", len(results))
+
+    return render_template('marketprice.html', results=results)
 
 
 @app.route('/soilreport', methods=['GET', 'POST'])
@@ -378,6 +522,14 @@ def ai_dashboard():
 def logout():
     session.pop('user', None)
     return redirect('/')
+
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%B %d, %Y'):
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').strftime(format)
+    except:
+        return value
+
 
 if __name__ == "__main__":
     app.run(debug=True)

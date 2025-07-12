@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Current Crop - AgriGuru</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .container { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 800px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        form { margin-top: 20px; }
+        input, button { padding: 10px; margin: 10px 0; width: 100%; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background: #3e8e41; }
+        .section { margin-top: 25px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="background: #dff0d8; padding: 10px; border-radius: 5px; color: #3c763d;">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+    <h2>🌾 My Current Crops - {{ name }}</h2>
+
+    <form method="POST">
+    <label>Crop Name:</label>
+    <input type="text" name="crop_name" required>
+
+    <label>Date of Seeding:</label>
+    <input type="date" name="seeding_date" required>
+
+    <button type="submit">Save Crop Details</button>
+</form>
+
+
+    {% if crops %}
+    <div class="section">
+        <h3>🌱 Your Crops:</h3>
+        <ul>
+            {% for crop in crops %}
+<li><strong>{{ crop[0] }}</strong> (Seeded on {{ crop[1]|datetimeformat }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h3>🌍 Current Weather:</h3>
+        <p>Temperature: {{ current_temp }}°C</p>
+        <p>Humidity: {{ humidity }}%</p>
+        <p>Condition: {{ weather_desc }}</p>
+    </div>
+
+    <div class="section">
+        <h3>📊 Soil Report:</h3>
+        <p>Soil Type: {{ soil_type }}</p>
+    </div>
+
+    <div class="section">
+        <h3>🔗 IoT Device Data (Simulated):</h3>
+        <p>Soil Humidity: {{ iot_humidity }}%</p>
+        <p><strong>{{ water_recommendation }}</strong></p>
+    </div>
+</div>
+</body>
+</html>

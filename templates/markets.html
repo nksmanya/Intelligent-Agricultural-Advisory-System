@@ -1,12 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Market Prices - AgriBro</title>
+    <title>Market Price Predictions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #4CAF50;
+        }
+
+        h4 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: 1px solid #ccc;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+        }
+
+        th {
+            background-color: #eee;
+        }
+    </style>
 </head>
 <body>
-    <h1>Market Prices</h1>
-    <p>This page will show live market prices for crops (coming soon!)</p>
-    <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+    <h1>📈 Market Price Predictions</h1>
+
+    {% if results %}
+        {% for item in results %}
+            <h2>{{ item.commodity }}</h2>
+
+            <h4>Last 2 Months</h4>
+            <ul>
+                {% for row in item.last_two %}
+                    <li>{{ row.month }} → ₹{{ row.avg_modal_price }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Next 6 Months (Predicted)</h4>
+            <ul>
+                {% for row in item.next_six %}
+                    <li>{{ row.month }} → ₹{{ row.predicted_price }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No data to display.</p>
+    {% endif %}
 </body>
 </html>

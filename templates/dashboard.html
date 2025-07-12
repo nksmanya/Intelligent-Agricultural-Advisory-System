@@ -72,7 +72,20 @@
             background: #f9f9f9;
             transition: transform 0.3s ease, background 0.3s ease;
         }
-
+        .feature-card-1 {
+            border: 1px solid #000000;
+            border-radius: 10px;
+            padding: 5px;
+            text-decoration: none;
+            color: #000000;
+            background: #f9f9f9;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .feature-card-1:hover {
+            transform: translateY(-5px);
+            background: #a3ffa3;
+            font-weight: bold;
+        }
         .feature-card:hover {
             transform: translateY(-5px);
             background: #eafbea;
@@ -148,11 +161,16 @@
                 <h1>Welcome back, {{ name }}!</h1>
                 <p style="font-weight: 300;">Your AI-powered Agriculture Assistant</p>
             </div>
-            <a href="/ai-dashboard" class="feature-card">
+            <a href="/ai-dashboard" class="feature-card-1">
                 <span class="feature-icon"></span>
                 <div> 🤖 AI-Powered Agri Dashboard</div>
             </a>
-            <a href="/news.html" class="feature-card">
+            <a href="{{ url_for('current_crop') }}" class="feature-card-1">
+                <span class="feature-icon"></span>
+                <div>🌾My Current Crops</div>
+            </a>
+
+            <a href="/news.html" class="feature-card-1">
                 <span class="feature-icon"></span>
                 <div> 📰 News</div>
             </a>
@@ -166,18 +184,21 @@
                 <div class="feature-desc">Access detailed weather predictions to plan your farming activities and
                     protect your crops.</div>
             </a>
-            <a href="/marketprice.html" class="feature-card">
-                <span class="feature-icon">💹</span>
-                <div class="feature-title">Market Price</div>
-                <div class="feature-desc">Stay updated with real-time market prices for your crops to help you make
-                    smarter selling decisions and maximize profits.</div>
-            </a>
+           <a href="{{ url_for('market_price') }}" class="feature-card">
+    <span class="feature-icon">💹</span>
+    <div class="feature-title">Market Price</div>
+    <div class="feature-desc">
+        Stay updated with real-time market prices for your crops to help you make smarter selling decisions and maximize profits.
+    </div>
+</a>
+
             <a href="/pest" class="feature-card">
                 <span class="feature-icon">🪲</span>
                 <div class="feature-title">Pest and Disease Guide</div>
                 <div class="feature-desc">Access detailed information on common pests and diseases affecting your crops,
                     along with prevention and treatment methods.</div>
             </a>
+
             <a href="/tips.html" class="feature-card">
                 <span class="feature-icon">💡</span>
                 <div class="feature-title">Tips and FAQs</div>
