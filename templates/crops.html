@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Recommendations</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #a8e063, #56ab2f);
+            margin: 0;
+            padding: 10px 10px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            background-image: url('static/cropbg.jpg');
+        }
+
+        .container {
+            max-width: 600px;
+            top: 10px;            
+            height: 600px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #f0ffc7;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 10px;
+            margin: 0px;
+            top: 3px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2, .card h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .info p {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .recommendations li {
+            background: #f0f8f5;
+            padding: 12px 20px;
+            border-left: 5px solid #4CAF50;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .recommendations li:hover {
+            background: #e8f5e9;
+        }
+
+        a.back-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        a.back-link:hover {
+            color: #2e7d32;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Farm Details Card -->
+        <div class="card info">
+            <h2>Crop Recommendations </h2>
+            <p><strong>Soil Type:</strong> {{ soil_type }}</p>
+            <p><strong>Water Source:</strong> {{ water_source }}</p>
+            <p><strong>Land Size:</strong> {{ land_size }} acres</p>
+            <p><strong>Preferred Crops:</strong> {{ preferred_crops }}</p>
+        </div>
+
+        <!-- Recommendations Card -->
+        <div class="card recommendations">
+            <h3>Recommended Crops</h3>
+            <ul>
+                {% for crop in crop_recommendations %}
+                    <li>{{ crop }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

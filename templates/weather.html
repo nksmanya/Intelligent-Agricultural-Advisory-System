@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: url('static/weather.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 50px 20px;
+    color: #1c3102;
+}
+.icons {
+    position: absolute;
+    top: 83px;
+    margin-left: 40git0px;
+}
+.main {
+    max-width: 1200px;
+    width: 100%;
+    padding: 40px;
+    background-color: #ceff5d;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 28px;
+    color: #233c00;
+    text-align: center;
+    margin: 0 0 20px;
+}
+.left-column > .card {
+    flex: 1;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: 100%;
+}
+
+.card {
+    background: #f4fbe5;
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #2d4403;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+h3 {
+    color: #39580f;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+p {
+    margin: 10px 0;
+    font-size: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+th {
+    background-color: #b0f427;
+    color: #1c3102;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f0ffc7;
+}
+
+a.back-link {
+    text-decoration: none;
+    color: #39580f;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+a.back-link:hover {
+    color: #548407;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="dashboard-header">
+            <img src="static/weathericon.png" class="icons" width="40px">
+            <h1>Weather Dashboard</h1>
+        </div>
+
+        <div class="dashboard-layout">
+            <!-- Left Column: Current + Past -->
+            <div class="left-column">
+                <!-- Current Weather Card -->
+                <div class="card">
+                    <h3>Current Weather</h3>
+                    {% if 'main' in current_weather %}
+                        <p><strong>Temperature:</strong> {{ current_weather['main']['temp'] }}°C</p>
+                        <p><strong>Humidity:</strong> {{ current_weather['main']['humidity'] }}%</p>
+                        <p><strong>Condition:</strong> {{ current_weather['weather'][0]['description'] }}</p>
+                    {% else %}
+                        <p>Weather data not available for this location.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Past Weather History Card -->
+                <div class="card">
+                    <h3>Past 5 Days Weather History</h3>
+                    {% if past_weather %}
+                        <table>
+                            <tr><th>Date</th><th>Temp (°C)</th><th>Humidity (%)</th></tr>
+                            {% for day in past_weather %}
+                                <tr>
+                                    <td>{{ day.date }}</td>
+                                    <td>{{ day.temp }}</td>
+                                    <td>{{ day.humidity }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p>No past weather data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Middle Column: Predicted Weather -->
+            <div class="card">
+                <h3>Predicted Weather for Next 1 Year (Demo)</h3>
+                <table>
+                    <tr><th>Month</th><th>Predicted Temp (°C)</th><th>Predicted Humidity (%)</th></tr>
+                    {% for month in future_weather %}
+                        <tr>
+                            <td>{{ month['Month'] }}</td>
+                            <td>{{ month['Predicted Temp'] }}</td>
+                            <td>{{ month['Predicted Humidity'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Right Column: Annual Rainfall -->
+            <div class="card">
+                <h3>Annual Rainfall (Past 12 Months - Simulated)</h3>
+                <p><strong>Total Rainfall:</strong> {{ annual_rainfall_total }} mm</p>
+                <table>
+                    <tr><th>Month</th><th>Rainfall (mm)</th></tr>
+                    {% for month in annual_rainfall_data %}
+                        <tr>
+                            <td>{{ month['Month'] }}</td>
+                            <td>{{ month['Rainfall'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

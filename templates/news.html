@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agri News & Updates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5fdf3;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        .news-item {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .news-title {
+            font-size: 20px;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .news-desc {
+            font-size: 15px;
+            color: #555;
+        }
+
+        .news-link {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🌾 Latest Agriculture News</h1>
+
+    {% if articles %}
+        {% for article in articles %}
+        <div class="news-item">
+            <div class="news-title">{{ article['title'] }}</div>
+            <div class="news-desc">{{ article['description'] or 'No description available.' }}</div>
+            <a class="news-link" href="{{ article['url'] }}" target="_blank">Read More</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No news found. Please try again later.</p>
+    {% endif %}
+
+</body>
+</html>

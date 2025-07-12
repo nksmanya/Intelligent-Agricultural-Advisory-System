@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pest & Disease Guide | AgriBro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f9fff2;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .pest-container {
+            margin-top: 20px;
+        }
+        .pest-item {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .pest-title {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .pest-section {
+            margin-top: 10px;
+        }
+        .pest-section strong {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Pest and Disease Guide</h1>
+
+<div class="pest-container">
+
+    <!-- Example Pest/Disease -->
+    <div class="pest-item">
+        <div class="pest-title">1. Leaf Spot Disease (Fungal)</div>
+        <div class="pest-section"><strong>Affected Crops:</strong> Tomato, Brinjal, Chilli</div>
+        <div class="pest-section"><strong>Symptoms:</strong> Brown or black spots on leaves, yellowing around the spots, wilting.</div>
+        <div class="pest-section"><strong>Solution:</strong> Use neem oil spray or a recommended fungicide. Remove infected leaves to avoid spreading.</div>
+        <div class="pest-section"><strong>DIY Remedy:</strong> Mix 1 tablespoon baking soda, 1 tablespoon vegetable oil, and 1 liter of water. Spray every 5-7 days.</div>
+    </div>
+
+    <div class="pest-item">
+        <div class="pest-title">2. Aphid Infestation (Insect)</div>
+        <div class="pest-section"><strong>Affected Crops:</strong> Cabbage, Beans, Citrus Fruits</div>
+        <div class="pest-section"><strong>Symptoms:</strong> Curling leaves, sticky honeydew residue, distorted growth.</div>
+        <div class="pest-section"><strong>Solution:</strong> Spray neem oil or insecticidal soap. Encourage natural predators like ladybugs.</div>
+        <div class="pest-section"><strong>DIY Remedy:</strong> Mix 1 tablespoon mild soap in 1 liter of water. Spray directly on aphids.</div>
+    </div>
+
+    <div class="pest-item">
+        <div class="pest-title">3. Root Rot (Fungal)</div>
+        <div class="pest-section"><strong>Affected Crops:</strong> Beans, Peppers, Cucumbers</div>
+        <div class="pest-section"><strong>Symptoms:</strong> Wilting, yellowing, roots turning black or mushy.</div>
+        <div class="pest-section"><strong>Solution:</strong> Improve soil drainage, reduce watering, and use antifungal soil treatments.</div>
+        <div class="pest-section"><strong>DIY Remedy:</strong> Mix cinnamon powder in water and pour near roots as a mild antifungal treatment.</div>
+    </div>
+
+</div>
+<h2>Chat with AgriBot (Pest & Disease Helper)</h2>
+<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; max-width: 600px;">
+  <div id="chat-box" style="min-height: 150px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;"></div>
+  <input type="text" id="user-msg" placeholder="Ask about pests or diseases..." style="width: 80%;">
+  <button onclick="sendMessage()">Send</button>
+</div>
+<h2>Plant Disease Detection (Camera)</h2>
+<form id="upload-form" method="POST" enctype="multipart/form-data" action="/detect_disease">
+  <input type="file" accept="image/*" capture="environment" name="image" required>
+  <button type="submit">Detect Disease</button>
+</form>
+
+{% if disease_result %}
+  <h3>Disease Detected: {{ disease_result }}</h3>
+{% endif %}
+
+
+<script>
+function sendMessage() {
+  const userMsg = document.getElementById('user-msg').value;
+  if (!userMsg) return;
+
+  const chatBox = document.getElementById('chat-box');
+  chatBox.innerHTML += `<p><strong>You:</strong> ${userMsg}</p>`;
+
+  fetch('/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `message=${encodeURIComponent(userMsg)}`
+  })
+  .then(response => response.json())
+  .then(data => {
+    chatBox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+    document.getElementById('user-msg').value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+}
+</script>
+
+
+</body>
+</html>

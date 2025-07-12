@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tamil Nadu Crop Recommendation (Auto-Fill)</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; }
+        h2 { color: #4CAF50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Welcome, {{ name }}</h2>
+    <p><strong>Soil Type:</strong> {{ soil_type }}</p>
+    <p><strong>Current Temperature:</strong> {{ temp }}°C</p>
+    <p><strong>Annual Rainfall:</strong> {{ rainfall }} mm</p>
+
+    <form method="post">
+        <label>Enter Soil pH:</label>
+        <input type="number" step="0.1" name="ph" required>
+        <button type="submit">Get Crop Recommendations</button>
+    </form>
+
+    {% if crops %}
+  <h2>Recommended Crops</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Crop</th>
+        <th>Soil Type</th>
+        <th>Temp Range (°C)</th>
+        <th>pH Range</th>
+        <th>Rainfall Range (mm)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for crop in crops %}
+      <tr>
+        <td>{{ crop['Crop'] }}</td>
+        <td>{{ crop['SoilType'] }}</td>
+        <td>{{ crop['MinTemp'] }} - {{ crop['MaxTemp'] }}</td>
+        <td>{{ crop['MinPH'] }} - {{ crop['MaxPH'] }}</td>
+        <td>{{ crop['MinRainfall'] }} - {{ crop['MaxRainfall'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}

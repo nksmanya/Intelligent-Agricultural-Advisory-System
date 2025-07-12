@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Soil Health Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5fdf3;
+            padding: 30px;
+        }
+
+        h1, h2 {
+            color: #2e7d32;
+        }
+
+        .report-section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .result {
+            font-size: 20px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🌱 Soil Health Report</h1>
+
+    <section class="report-section">
+        <h2>📡 Auto Fetch From IoT Device</h2>
+        <form method="POST" action="/soilreport" >
+            <button type="submit" name="fetch_iot" value="1">Fetch from IoT Sensor</button>
+        </form>
+    </section>
+
+    <section class="report-section">
+        <h2>✍️ Enter Soil Data Manually</h2>
+        <form method="POST" action="/soilreport">
+            <label>Soil pH:</label>
+            <input type="number" name="ph" step="0.1" required>
+
+            <label>Nitrogen (ppm):</label>
+            <input type="number" name="nitrogen" required>
+
+            <label>Phosphorus (ppm):</label>
+            <input type="number" name="phosphorus" required>
+
+            <label>Potassium (ppm):</label>
+            <input type="number" name="potassium" required>
+
+            <label>Moisture (%):</label>
+            <input type="number" name="moisture" required>
+
+            <button type="submit">Submit Soil Report</button>
+        </form>
+    </section>
+
+    {% if soil_quality %}
+    <section class="report-section">
+        <h2>📝 Soil Quality Result</h2>
+        <div class="result">Soil Quality: {{ soil_quality }} / 100</div>
+    </section>
+    {% endif %}
+
+</body>
+</html>

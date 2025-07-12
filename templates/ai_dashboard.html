@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI-Powered Agri Dashboard</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #9be15d, #00e3ae);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2f855a;
+        }
+        h2 {
+            color: #2b6cb0;
+            margin-top: 30px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            text-decoration: none;
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 AI-Powered Agri Dashboard</h1>
+
+        <h2>Best Crops to Grow</h2>
+        <ul>
+            <li>Rice</li>
+            <li>Wheat</li>
+            <li>Maize</li>
+            <li>Sugarcane</li>
+        </ul>
+
+        <h2>Upcoming Weather Forecast (Sample)</h2>
+        <ul>
+            <li>Temperature: 30°C to 34°C</li>
+            <li>Humidity: 70% to 80%</li>
+            <li>Rainfall Chances: Moderate to High</li>
+        </ul>
+
+        <h2>Fertilizer & Pest Control Tips</h2>
+        <ul>
+            <li>Apply Nitrogen fertilizer during early growth stages.</li>
+            <li>Use bio-pesticides to minimize pest attacks.</li>
+            <li>Ensure proper irrigation to avoid waterlogging.</li>
+        </ul>
+
+        <h2>Nearby Market Rates (Sample)</h2>
+        <ul>
+            <li>Rice: ₹25/kg</li>
+            <li>Wheat: ₹22/kg</li>
+            <li>Maize: ₹18/kg</li>
+        </ul>
+
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="static\favicon.png">
+    <title>AgriGuru | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class = "bg">
+<div class="container">
+  <img src="static\favicon.png" class="logo" height="70" width="70">
+    <h2 class="titlegreen">AgriGuru Login</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li style="color:red;">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="/login">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button class="cssbuttons-io">
+          <span> <img src="static\login.png" class="loginlogo" height="20" width="20"> Login </span>
+        </button>
+    </form>
+    <a href="{{ url_for('register') }}" class="titlegreen">Don't have an account? Register</a>
+</div>
+<!-- <footer class="footer">
+  <p>AgriGuru</p>
+  <p>Developed by TryOnX Team</p>
+</footer> -->
+>>>>>>> d8517b70eace3a3991ec1bd7c210a82598d18895
+</body>
+</html>
