@@ -1,20 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="icon" type="image/x-icon" href="static/favicon.png">
-    <title>Tamil Nadu Crop Recommendation (Auto-Fill)</title>
+    <title>AgriGuru | Tamil Nadu Crop Recommendation</title>
     <style>
-        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
-        .container { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; }
-        h2 { color: #4CAF50; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #4CAF50; color: white; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        p {
+            font-size: 15px;
+            margin: 10px 0;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #eef7ee;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>Welcome, {{ name }}</h2>
+    <h2>🌾 Welcome, {{ name }}</h2>
     <p><strong>Soil Type:</strong> {{ soil_type }}</p>
     <p><strong>Current Temperature:</strong> {{ temp }}°C</p>
     <p><strong>Annual Rainfall:</strong> {{ rainfall }} mm</p>
@@ -26,27 +116,30 @@
     </form>
 
     {% if crops %}
-  <h2>Recommended Crops</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Crop</th>
-        <th>Soil Type</th>
-        <th>Temp Range (°C)</th>
-        <th>pH Range</th>
-        <th>Rainfall Range (mm)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for crop in crops %}
-      <tr>
-        <td>{{ crop['Crop'] }}</td>
-        <td>{{ crop['SoilType'] }}</td>
-        <td>{{ crop['MinTemp'] }} - {{ crop['MaxTemp'] }}</td>
-        <td>{{ crop['MinPH'] }} - {{ crop['MaxPH'] }}</td>
-        <td>{{ crop['MinRainfall'] }} - {{ crop['MaxRainfall'] }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+        <h2>🌱 Recommended Crops</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Crop</th>
+                    <th>Soil Type</th>
+                    <th>Temp Range (°C)</th>
+                    <th>pH Range</th>
+                    <th>Rainfall Range (mm)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in crops %}
+                    <tr>
+                        <td>{{ crop['Crop'] }}</td>
+                        <td>{{ crop['SoilType'] }}</td>
+                        <td>{{ crop['MinTemp'] }} - {{ crop['MaxTemp'] }}</td>
+                        <td>{{ crop['MinPH'] }} - {{ crop['MaxPH'] }}</td>
+                        <td>{{ crop['MinRainfall'] }} - {{ crop['MaxRainfall'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+</body>
+</html>
