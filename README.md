@@ -1,2 +1,2 @@
-# Agribro
-### Intelligent Agricultural Advisory System
+# Intelligent Agricultural Advisory System
+### Infosys Global Hackathon Project
